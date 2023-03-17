@@ -24,7 +24,7 @@ public class bot implements io {
             for (int j = 0; j < board.size; j++) {
                 if (board.isEmpty(i, j)) { // if possible move
                     board.play(i, j, this.state);
-                    value = minimax(new Board(board), 1, false);
+                    value = minimax(new Board(board), 6, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
                     board.unplay();
 
                     if (value > bestValue) {
@@ -46,19 +46,27 @@ public class bot implements io {
         this.board = board;
     }
 
-    private int minimax(Board board, int depth,     boolean isMaximising) {
+    private int minimax(Board board, int depth, int alpha, int beta, boolean isMaximising) {
         if (depth==0 || board.noOfMovesLeft()==0 || board.isWin()) 
             return board.evaluatePosition();
 
         int value = 0;
+        int eval = 0;
         if (isMaximising) {
             value = Integer.MIN_VALUE;
 
+            outer:
             for (int i = 0; i < this.board.size; i++) {
                 for (int j = 0; j < this.board.size; j++) {
                     if (board.isEmpty(i, j)) { // if possible move
                         board.play(i, j, this.state);
-                        value = Math.max(value, minimax(new Board(board), depth-1, false));
+
+                        eval = minimax(new Board(board), depth-1, alpha, beta, false);
+                        value = Math.max(value, eval);
+
+                        alpha = Math.max(alpha, eval);
+                        if (beta <= alpha) break outer;
+
                         board.unplay();
                     }
                 }
@@ -68,11 +76,18 @@ public class bot implements io {
         else { //minimising player
             value = Integer.MAX_VALUE;
 
+            outer:
             for (int i = 0; i < this.board.size; i++) {
                 for (int j = 0; j < this.board.size; j++) {
                     if (board.isEmpty(i, j)) { // if possible move
                         board.play(i, j, this.state.next());
-                        value = Math.min(value, minimax(new Board(board), depth-1, true));
+
+                        eval = minimax(new Board(board), depth-1, alpha, beta, true);
+                        value = Math.min(value, eval);
+
+                        beta = Math.min(beta, eval);
+                        if (beta <= alpha) break outer;
+
                         board.unplay();
                     }
                 }

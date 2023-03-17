@@ -1,6 +1,3 @@
-
-
-
 enum State {
     Empty, X, O;
 
@@ -161,7 +158,7 @@ public class TicTacToe2D {
 
 
     public static void main(String[] args) {
-        TicTacToe2D ttt = new TicTacToe2D("h,b",3);
+        TicTacToe2D ttt = new TicTacToe2D("h,b",4);
         ttt.play();
     }
 }
